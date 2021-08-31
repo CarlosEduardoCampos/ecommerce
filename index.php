@@ -9,7 +9,7 @@
 	$app->config('debug', true);
 
 	$app->get('/', function() {
-		//bucha dados e cabeçalho da página
+		//pucha dados e cabeçalho da página
 		$page = new Page();
 		$page->setTpl("index");
 	});
