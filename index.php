@@ -9,14 +9,14 @@
 
 	$app->config('debug', true);
 
-	//Rota tamplete do cliente
+	//Rota templete do cliente
 	$app->get('/', function() {
 		//pucha dados e cabeçalho da página
 		$page = new Page();
 		$page->setTpl("index");
 	});
 
-	//Rota tamplete adiministrador
+	//Rota templete adiministrador
 	$app->get('/admin/', function() {
 		//pucha dados e cabeçalho da página
 		$page = new PageAdmin();
