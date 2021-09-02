@@ -8,7 +8,11 @@
 		//Atributos
 		private $tpl;
 		private $options  = [];
-		private $defaults = ["data"=>[]];
+		private $defaults = [
+			"header"=>true,
+			"footer"=>true,
+			"data"=>[]
+		];
 		//Métodos
 		private function setData($data=array())
 		{
@@ -35,7 +39,7 @@
 			$this->setData($this->options["data"]);
 			
 			//Cria o cabeçalho padrão de todas a páginas
-			$this->tpl->draw("header");
+			if($this->options["header"] === true) $this->tpl->draw("header");
 		}
 		//
 		public function setTpl($name,$data =array(),$returnHTML = false)
@@ -47,7 +51,7 @@
 		public function __destruct()
 		{ 
 			//Cria o rodapé padrão de todas as páginas
-			$this->tpl->draw("footer");
+			if($this->options["footer"] === true)$this->tpl->draw("footer");
 		}
 	}
 ?>
