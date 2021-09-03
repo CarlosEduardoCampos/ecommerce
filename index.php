@@ -1,5 +1,5 @@
 <?php 
-
+	session_start();
 	require_once("vendor/autoload.php");
 	use \Slim\Slim;
 	use \Hcode\Page;
@@ -16,14 +16,17 @@
 		//pucha dados e cabeçalho padrão
 		$page = new Page();
 		$page->setTpl("index");
+		exit;
 	});
 
 	//Rota templete adiministrador
 	$app->get('/admin/', function()
 	{
+		User::verifyLogin();
 		//pucha dados e cabeçalho padrão
 		$page = new PageAdmin();
 		$page->setTpl("index");
+		exit;
 	});
 
 	//Rota login adiministrador Amostragem
@@ -37,8 +40,8 @@
 			]
 		);
 		$page->setTpl("login");
+		exit;
 	});
-	$app->run();
 
 	//Rota login adiministrador Verificação
 	$app->post('/admin/login', function()
@@ -48,7 +51,14 @@
 		header("Location: /admin/");
 		exit;
 	});
-	$app->run();
-	
 
+	//Rota logout
+	$app->get('admin/logout',function()
+	{
+		User::logout();
+		header("login");
+		exit;
+	});
+
+	$app->run();
 ?>
