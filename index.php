@@ -43,6 +43,57 @@
 		exit;
 	});
 
+	//Rota listagem de Usuarios
+	$app->get("/admin/users", function()
+	{
+		User::veryfyLogin();
+		$page = new PAgeAdmin();
+		$page->setTpl("users");
+		exit;
+	});
+
+	//Rota Cadastro de Usuarios
+	$app->get("/admin/user/create"), function()
+	{
+		User::veryfyLogin();
+		$page = new PageAdmin();
+		$page->setTpl("users-creat");
+		exit;
+	});
+
+	//Rota Cadastro de Usuarios
+	$app->post("/admin/user/creat"), function()
+	{
+		User::veryfyLogin();
+		$page = new PageAdmin();
+		$page->setTpl("users-creat");
+	});
+
+	//Rota Atualização de Usuarios
+	$app->get("/admin/user/:iduser"), function($iduser)
+	{
+		User::verifyLogin();
+		$page = new PageAdmin();
+		$page->setTpl("users-update");
+	});
+
+	//Rota Atualização de Usuarios
+	$app->post("/admin/user/:iduser"), function($iduser)
+	{
+		User::verifyLogin();
+		$page = new PageAdmin();
+		$page->setTpl("users-update");
+	});
+
+	//Rota de deltar usuario
+	//Rota Atualização de Usuarios
+	$app->deletar("/admin/user/:iduser", function($iduser))
+	{
+		User::verifyLogin();
+		$page = new PageAdmin();
+		$page->setTpl("users-update");
+	}
+
 	//Rota login adiministrador Verificação
 	$app->post('/admin/login', function()
 	{
@@ -53,10 +104,10 @@
 	});
 
 	//Rota logout
-	$app->get('admin/logout',function()
+	$app->get('/admin/logout',function()
 	{
 		User::logout();
-		header("login");
+		header("Location: /admin/login");
 		exit;
 	});
 

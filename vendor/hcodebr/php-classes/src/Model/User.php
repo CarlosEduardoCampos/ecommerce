@@ -52,7 +52,7 @@
             
         }
 
-        public function logout()
+        public static function logout()
         {
             $_SESSION[User::SESSION] = NULL;
         }
