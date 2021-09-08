@@ -20,12 +20,76 @@
 	});
 
 	//Rota templete adiministrador
-	$app->get('/admin/', function()
+	$app->get('/admin', function()
 	{
 		User::verifyLogin();
 		//pucha dados e cabeçalho padrão
 		$page = new PageAdmin();
 		$page->setTpl("index");
+		exit;
+	});
+
+	//Rota listagem de Usuarios
+	$app->get('/admin/users', function()
+	{
+		User::verifyLogin();
+		$users = User::listAll();
+		$page = new PAgeAdmin();
+		$page->setTpl("users", array("users"=>$users));
+		exit;
+	});
+
+	//Rota Cadastro de Usuarios
+	$app->get('/admin/users/create', function()
+	{
+		User::verifyLogin();
+		$page = new PageAdmin();
+		$page->setTpl("users-create");
+		exit;
+	});
+
+	//Rota Cadastro de Usuarios
+	$app->post('/admin/users/create', function()
+	{
+		User::verifyLogin();
+		$page = new PageAdmin();
+		$users = new User();
+		$users->setData($_POST);
+		$users->save();
+		header('Location: /admin/users');
+		exit;
+	});
+
+	//Rota de deletar usuario
+	$app->get('/admin/users/delete/:iduser', function($iduser)
+	{
+		User::verifyLogin();
+		$user = new User();
+		$user->get((int)$iduser);
+		$user->delete();
+		header('Location: /admin/users');
+		exit;
+	});
+
+	//Rota Atualização de Usuarios
+	$app->get('/admin/users/:iduser', function($iduser)
+	{
+		User::verifyLogin();
+		$user = new User();
+		$user->get((int)$iduser);
+		$page = new PageAdmin();
+		$page->setTpl("users-update", array('user'=> $user->getValues()));
+	});
+
+	//Rota Atualização de Usuarios
+	$app->post('/admin/users/:iduser', function($iduser)
+	{
+		User::verifyLogin();
+		$user = new User();
+		$user->get((int)$iduser);
+		$user->setData($_POST);
+		$user->update();
+		header('Location: /admin/users');
 		exit;
 	});
 
@@ -43,63 +107,12 @@
 		exit;
 	});
 
-	//Rota listagem de Usuarios
-	$app->get("/admin/users", function()
-	{
-		User::veryfyLogin();
-		$page = new PAgeAdmin();
-		$page->setTpl("users");
-		exit;
-	});
-
-	//Rota Cadastro de Usuarios
-	$app->get("/admin/user/create"), function()
-	{
-		User::veryfyLogin();
-		$page = new PageAdmin();
-		$page->setTpl("users-creat");
-		exit;
-	});
-
-	//Rota Cadastro de Usuarios
-	$app->post("/admin/user/creat"), function()
-	{
-		User::veryfyLogin();
-		$page = new PageAdmin();
-		$page->setTpl("users-creat");
-	});
-
-	//Rota Atualização de Usuarios
-	$app->get("/admin/user/:iduser"), function($iduser)
-	{
-		User::verifyLogin();
-		$page = new PageAdmin();
-		$page->setTpl("users-update");
-	});
-
-	//Rota Atualização de Usuarios
-	$app->post("/admin/user/:iduser"), function($iduser)
-	{
-		User::verifyLogin();
-		$page = new PageAdmin();
-		$page->setTpl("users-update");
-	});
-
-	//Rota de deltar usuario
-	//Rota Atualização de Usuarios
-	$app->deletar("/admin/user/:iduser", function($iduser))
-	{
-		User::verifyLogin();
-		$page = new PageAdmin();
-		$page->setTpl("users-update");
-	}
-
 	//Rota login adiministrador Verificação
 	$app->post('/admin/login', function()
 	{
 		//pucha dados e anula cabeçalho padrão
 		User::login($_POST["login"], $_POST["password"]);
-		header("Location: /admin/");
+		header("Location: /admin");
 		exit;
 	});
 
