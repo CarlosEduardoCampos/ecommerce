@@ -9,19 +9,19 @@
         private $idcategory;
         private $descategory;
         //
-        public function get($id)
+        public function get()
         {
             $sql = new Sql();
             return($sql->select("SELECT * FROM tb_categories WHERE idcategory = :id",
                 array(
-                    ':id' => $id
+                    ':id' => $this->getidcategory()
                 ))[0]//fim array,select
             );//fim return
         }
         //
         public function setDataForm($post)
         {
-            $this->setDescategory($post["descategory"]);
+            $this->setdescategory($post["descategory"]);
         }
         //
         public static function listAll()
@@ -40,23 +40,39 @@
                     ':descategory' => $this->getdescategory()
                 ))//fim array,select
             );//fim return
+            Category::updateFile();
         }
         //
         public function delete()
         {
             $sql = new Sql();
-            $sql->query("DELETE FROM tb_categories WHERE :id",
+            $sql->query("DELETE FROM tb_categories WHERE idcategory = :id",
                 array(
-                    ':id' => $this->getdcategory()
+                    ':id' => $this->getidcategory()
                 )
             );
+            Category::updateFile();
         }
+        //
+        public static function updateFile()
+        {
+            $categories= Category::listAll();
+            $html = [];
+
+            foreach($categories as $row)
+            {
+                array_push($html, '<li><a href="list-categories/'.$row['idcategory'].'">'.$row['descategory'].'</a></li>');
+            }
+
+            file_put_contents($_SEVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR."categories-menu.html", implode('',$html));
+        }
+        
         /**
          * Get the value of idcategory
          */ 
         public function getIdcategory()
         {
-            return $this->idcategory;
+                return $this->idcategory;
         }
 
         /**
@@ -66,9 +82,9 @@
          */ 
         public function setIdcategory($idcategory)
         {
-            $this->idcategory = $idcategory;
+                $this->idcategory = $idcategory;
 
-            return $this;
+                return $this;
         }
 
         /**
@@ -76,7 +92,7 @@
          */ 
         public function getDescategory()
         {
-            return $this->descategory;
+                return $this->descategory;
         }
 
         /**
@@ -86,9 +102,9 @@
          */ 
         public function setDescategory($descategory)
         {
-            $this->descategory = $descategory;
+                $this->descategory = $descategory;
 
-            return $this;
+                return $this;
         }
     }//fim class Category
     
