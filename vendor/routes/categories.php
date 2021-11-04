@@ -4,6 +4,16 @@
     Use \Hcode\Model\Category;
 	Use \Hcode\Model\User;
     ////////////////////////////////////////////*** Category ***////////////////////////////////////////////
+	//lista itens da categoria
+	$app->get("/category/:id", function($id)
+	{
+		$category = new Category();
+		$page = new Page;
+		$category->setIdCategory((int)$id);
+		//
+		$page->setTpl("category",['category' => $category->get()]);
+	});
+
 	//-> Listagem de Categorias
 	$app->get("/admin/categories", function()
 	{

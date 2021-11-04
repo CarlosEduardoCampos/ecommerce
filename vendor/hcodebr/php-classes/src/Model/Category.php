@@ -34,8 +34,7 @@
         {
             $sql = new Sql();
             return($sql->select("CALL sp_categories_save(:idcategory, :descategory)",
-                array
-                (
+                array(
                     ':idcategory'  => $this->getidcategory(),
                     ':descategory' => $this->getdescategory()
                 ))//fim array,select
@@ -53,7 +52,7 @@
             );
             Category::updateFile();
         }
-        //
+        //->Cria uma lista com links para as categorias
         public static function updateFile()
         {
             $categories= Category::listAll();
@@ -61,10 +60,10 @@
 
             foreach($categories as $row)
             {
-                array_push($html, '<li><a href="list-categories/'.$row['idcategory'].'">'.$row['descategory'].'</a></li>');
+                array_push($html, '<li><a href="/category/'.$row['idcategory'].'">'.$row['descategory'].'</a></li>');
             }
 
-            file_put_contents($_SEVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR."categories-menu.html", implode('',$html));
+            file_put_contents($_SERVER['DOCUMENT_ROOT']. DIRECTORY_SEPARATOR ."views". DIRECTORY_SEPARATOR ."categories-menu.html", implode('',$html));
         }
         
         /**
@@ -72,7 +71,7 @@
          */ 
         public function getIdcategory()
         {
-                return $this->idcategory;
+            return $this->idcategory;
         }
 
         /**
@@ -82,9 +81,9 @@
          */ 
         public function setIdcategory($idcategory)
         {
-                $this->idcategory = $idcategory;
+            $this->idcategory = $idcategory;
 
-                return $this;
+            return $this;
         }
 
         /**
@@ -92,7 +91,7 @@
          */ 
         public function getDescategory()
         {
-                return $this->descategory;
+            return $this->descategory;
         }
 
         /**
@@ -102,9 +101,9 @@
          */ 
         public function setDescategory($descategory)
         {
-                $this->descategory = $descategory;
+            $this->descategory = $descategory;
 
-                return $this;
+            return $this;
         }
     }//fim class Category
     

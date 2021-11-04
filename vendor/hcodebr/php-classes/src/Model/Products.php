@@ -1,10 +1,13 @@
 <?php
-    class Products implements ClassInterface
+    namespace Hcode\Model;
+    use \Hcode\DB\Sql;
+    use \Hcode\Model;
+    class Products
     {
         //attributes
         private $idproduct;
         private $desproduct;
-        private $vlprince;
+        private $vlprice;
         private $vlwidth;
         private $vlheight;
         private $vllength;
@@ -12,6 +15,86 @@
         private $desurl;
         private $dtregister;
 
+        public function setDataForm($post)
+        {
+            $this->setDesproduct($post['desproduct']);
+            $this->setVlprice  ($post['vlprice']);
+            $this->setVlwidth   ($post['vlwidth']);
+            $this->setVlheight  ($post['vlheight']);
+            $this->setVllength  ($post['vllength']);
+            $this->setVlweight  ($post['vlweight']);
+        }
+
+        //Cria um array de todos os produtos ordenado pelo desproduct
+        public static function listAll()
+        {
+            try{
+                $sql = new Sql();
+                return($sql->select("SELECT * FROM tb_products ORDER BY desproduct"));
+            }
+            
+            catch (Exception $e)
+            {
+                return json_encode(Msg::arrayErros($e));
+            }
+        }//fim função listAll
+
+        //Faz o cadastro dos dados na tabela 
+        public function Save()
+        {
+            try{
+                $sql = new Sql();
+                return($sql->select("CALL sp_products_save(:idproduct, :desproduct, :vlprice, :vlwidth, :vlheight, :vllength, :vlweight, :desurl)",
+                [//array
+                    ':idproduct'  => $this->getIdproduct(),
+                    ':desproduct' => $this->getDesproduct(),
+                    ':vlprice'    => $this->getVlprice(),
+                    ':vlwidth'    => $this->getVlwidth(),
+                    ':vlheight'   => $this->getVlheight(),
+                    ':vllength'   => $this->getVllength(),
+                    ':vlweight'   => $this->getVlweight(),
+                    ':desurl'     => $this->getDesurl()
+                ]));
+            }
+            
+            catch (Exception $e)
+            {
+                return json_encode(Msg::arrayErros($e));
+            } 
+        }//fim função save
+
+        //Busca um cadastro no banco de dados e retorn um array
+        public function get()
+        {
+            try{
+                $sql = new Sql();
+                return($sql->select("SELECT * FROM tb_products WHERE idproduct = :id",
+                [//array
+                    ':id' => $this->getIdproduct()
+                ])[0]);
+            }
+            
+            catch (Exception $e)
+            {
+                return json_encode(Msg::arrayErros($e));
+            }
+        }//fim fução get
+
+        public function delete()
+        {
+            $sql = new Sql();
+            $sql->query("DELETE FROM tb_products WHERE idproduct = :id",
+            [//array
+                ':id' => $this->getIdProduct()
+            ]);
+        }
+
+        public function setPhoto($file)
+        {
+            $filename = $file["file"]["name"];
+            move_uploaded_file($file["file"]["tmp_name"],"site/img/products/$filename");
+        }
+       
         /**
          * Get the value of idproduct
          */ 
@@ -53,21 +136,21 @@
         }
 
         /**
-         * Get the value of vlprince
+         * Get the value of vlprice
          */ 
-        public function getVlprince()
+        public function getVlprice()
         {
-            return $this->vlprince;
+            return $this->vlprice;
         }
 
         /**
-         * Set the value of vlprince
+         * Set the value of vlprice
          *
          * @return  self
          */ 
-        public function setVlprince($vlprince)
+        public function setVlprice($vlprice)
         {
-            $this->vlprince = $vlprince;
+            $this->vlprice = $vlprice;
 
             return $this;
         }
@@ -88,26 +171,6 @@
         public function setVlwidth($vlwidth)
         {
             $this->vlwidth = $vlwidth;
-
-            return $this;
-        }
-
-        /**
-         * Get the value of vlheight
-         */ 
-        public function getVlheight()
-        {
-            return $this->vlheight;
-        }
-
-        /**
-         * Set the value of vlheight
-         *
-         * @return  self
-         */ 
-        public function setVlheight($vlheight)
-        {
-            $this->vlheight = $vlheight;
 
             return $this;
         }
@@ -211,5 +274,6 @@
 
             return $this;
         }
+
     }//fim classe
 ?>
