@@ -5,7 +5,8 @@
 	use \Hcode\Page;
     use \Hcode\PageAdmin;
     Use \Hcode\Model\User;
-	
+	Use \Hcode\Model\Products;
+
 	$app = new Slim();
 
 	$app->config('debug', true);
@@ -15,7 +16,10 @@
 	{
 		//pucha dados e cabeçalho padrão
 		$page = new Page();
-		$page->setTpl("index");
+		$page->setTpl("index",
+		[//array
+			'products' => Products::listAll()
+		]);
 		exit;
 	});
 
