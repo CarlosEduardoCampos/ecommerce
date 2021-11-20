@@ -2,6 +2,7 @@
     namespace Hcode\Model;
     use \Hcode\DB\Sql;
     use \Hcode\Model;
+    use \Hcode\Model\Products;
     //
     class Category
     {
@@ -11,12 +12,19 @@
         //
         public function get()
         {
-            $sql = new Sql();
-            return($sql->select("SELECT * FROM tb_categories WHERE idcategory = :id",
-                array(
-                    ':id' => $this->getidcategory()
-                ))[0]//fim array,select
-            );//fim return
+            try{
+                $sql = new Sql();
+                return($sql->select("SELECT * FROM tb_categories WHERE idcategory = :id",
+                [
+                    ':id' => $this->getIdcategory()
+                ])[0]);//fim return
+            }
+            
+            catch (Exception $e)
+            {
+                return json_encode(Msg::arrayErros($e));
+            }
+            
         }
         //
         public function setDataForm($post)
@@ -47,7 +55,7 @@
             $sql = new Sql();
             $sql->query("DELETE FROM tb_categories WHERE idcategory = :id",
                 array(
-                    ':id' => $this->getidcategory()
+                    ':id' => $this->getIdcategory()
                 )
             );
             Category::updateFile();
@@ -64,6 +72,55 @@
             }
 
             file_put_contents($_SERVER['DOCUMENT_ROOT']. DIRECTORY_SEPARATOR ."views". DIRECTORY_SEPARATOR ."categories-menu.html", implode('',$html));
+        }
+
+        //Busca os produtos relaionados com determinada categoria
+        public function getProducts($related = true)
+        {
+            try{
+                $sql = new Sql();
+
+                if($related)
+                {
+                    return($sql->select("Select * from tb_products Where idproduct in(Select a.idproduct from tb_products as a inner join tb_productscategories as b on a.idproduct = b.idproduct Where b.idcategory = :id)",
+                    //
+                    [//array
+                        ':id' => $this->getIdcategory()
+                    ]));//fim return, select, array
+                }
+                else{
+                    return($sql->select("Select * from tb_products Where idproduct not in(Select a.idproduct from tb_products as a inner join tb_productscategories as b on a.idproduct = b.idproduct Where b.idcategory = :id)",
+                    [//array
+                        ':id' => $this->getIdcategory()
+                    ]));//fim return, select, array
+                }
+                
+            }
+            
+            catch (Exeption $e)
+            {
+                return json_encode(Msg::arrayErros($e));
+            }
+        }
+
+        public function addProduct($product)
+        {
+            $sql = new Sql();
+            $sql->query("INSERT INTO tb_productscategories(idcategory, idproduct) Values(:idcategory, :idproduct)",
+            [
+                ':idcategory' => $this->getIdcategory(),
+                ':idproduct' => $product
+            ]);
+        }
+
+        public function removeProduct($product)
+        {
+            $sql = new Sql();
+            $sql->query("DELETE FROM tb_productscategories where idcategory = :idcategory AND idproduct = :idproduct",
+            [
+                ':idcategory' => $this->getIdcategory(),
+                ':idproduct' => $product
+            ]);
         }
         
         /**

@@ -6,6 +6,7 @@
     use \Hcode\PageAdmin;
     Use \Hcode\Model\User;
 	Use \Hcode\Model\Products;
+	Use \Hcode\Model\Category;
 
 	$app = new Slim();
 
@@ -31,6 +32,18 @@
 		$page = new PageAdmin();
 		$page->setTpl("index");
 		exit;
+	});
+
+	$app->get('/list-categories/:id', function($id)
+	{
+		$categories = new Category();
+		$page = new Page;
+		$categories->get((int)$id);
+		$page->setTpl("category",
+		[
+			'category'=>$category->get(),
+			'products'=>[]
+		]);
 	});
 
 	require_once('vendor/routes/routes.php');
