@@ -103,6 +103,32 @@
             }
         }
 
+        public function getProductsPage($page=1,$itemsPerPage=3)
+        {
+            $start = ($page-1) * $itemsPerPage;
+            $sql = new Sql();
+            //
+            $results = $sql->select("SELECT SQL_CALC_FOUND_ROWS * FROM tb_products as a
+                INNER JOIN tb_productscategories as b
+                ON a.idproduct = b.idproduct
+                INNER JOIN tb_categories as c
+                on c.idcategory = b.idcategory
+                WHERE c.idcategory = :id
+                LIMIT $statr,$itemsPerPage",
+                [
+                    ':id' => $this->getIdcategory()
+                ]
+            );
+
+            $resultTotal = $sql->select("SELECT found_rows() AS nrtotal");
+
+            return[
+                'data' => $results,
+                'total' => (int)$resultTotal[0]["nrtotal"],
+                'pages' => ceil($resultTotal[0]["nrtotal"]/$itemsPerPage)
+            ];
+        }
+
         public function addProduct($product)
         {
             $sql = new Sql();

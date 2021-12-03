@@ -36,13 +36,24 @@
 
 	$app->get('/list-categories/:id', function($id)
 	{
+		$page = (isset($_GET['page'])) ?(int)$_GET['page'] : 1;
 		$categories = new Category();
 		$page = new Page;
 		$categories->get((int)$id);
+		$pagination = $category->getProductsPage($page);
+		$pages = [];
+		for($i=1; $i < $pagination['pages']; $i++)
+		{
+			array_push($pages,[
+				'link' => '/categories'.$category->getIdcategory().'?page='.$i,
+				'pages' => $i
+			]);
+		}
+
 		$page->setTpl("category",
 		[
 			'category'=>$category->get(),
-			'products'=>[]
+			'products'=> $pagination['date']
 		]);
 	});
 
